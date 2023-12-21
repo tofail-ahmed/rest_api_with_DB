@@ -43,17 +43,72 @@ const createUserController = async (req, res) => {
     });
   }
 };
+//updating a user credentials---------
+//      try {
+//       const id=req.params.id;
+//       const user=await User.findOne({_id:id});
+//       user.name=req.body.name;
+//       user.age=req.body.age;
+//       await user.save();
+//       res.status(201).json(user);
+//      } catch (error) {
+//       res.status(500).send(error.message)
+//      }
+const updateUserController=async(req,res)=>{
+
+      try {
+            const id = req.params.id;
+            const name = req.body.name;
+            const age = Number(req.body.age);
+        
+            const updateFields = {};
+        
+            if (name) {
+              updateFields.name = name;
+            }
+        
+            if (!isNaN(age)) {
+              updateFields.age = age;
+            }
+        
+            const user = await User.findOneAndUpdate(
+              { _id: id },
+              { $set: updateFields },
+              { new: true } // To return the updated document
+            );
+        
+            if (user) {
+              res.send(user);
+            } else {
+              res.status(404).send("User not found");
+            }
+          } catch (error) {
+            res.status(500).send(error.message);
+          }
+}
+
+
 
 //deleting a user--------------------------
-const deleteSingleUserController = (req, res) => {
-  res.status(200).json({
-    message: "This is delete a user delete route",
-  });
+const deleteSingleUserController = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await User.deleteOne({ _id: id });
+
+    res.status(200).send({
+      message: "User is deleted",
+    });
+  } catch (error) {
+    res.status(404).send({
+      message: error.message || "User not found",
+    });
+  }
 };
 
 module.exports = {
   getAllUserController,
   getSingleUserController,
   createUserController,
+  updateUserController,
   deleteSingleUserController,
 };

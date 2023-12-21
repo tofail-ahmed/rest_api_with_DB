@@ -4,12 +4,13 @@ const {
   getSingleUserController,
   createUserController,
   deleteSingleUserController,
+  updateUserController,
 } = require("../controllers/users.controller");
 const router = express.Router();
 
 router.get("/", getAllUserController);
 router.get("/:id", getSingleUserController);
 router.post("/", createUserController);
-router.put("/", createUserController);
-router.delete("/", deleteSingleUserController);
+router.patch("/:id", updateUserController);
+router.delete("/:id", deleteSingleUserController);
 module.exports = router;
